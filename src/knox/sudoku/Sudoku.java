@@ -1,9 +1,7 @@
 package knox.sudoku;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * 
@@ -31,13 +29,32 @@ public class Sudoku {
 	}
 	
 	public boolean isLegal(int row, int col, int val) {
-		// TODO: check if it's legal to put val at row, col
-		return true;
+		Set<Integer> legalNums = (Set<Integer>) getLegalValues(row, col);
+		if(legalNums.contains(val))
+			return true;
+		return false;
 	}
 	
 	public Collection<Integer> getLegalValues(int row, int col) {
-		// TODO: return only the legal values that can be stored at the given row, col
-		return new LinkedList<>();
+		// get all values that do not occur in either the row or col given, or the 3 x 3 area it is in
+		Set<Integer> result = new HashSet<>(Arrays.asList(1,2,3,4,5,6,7,8,9));
+
+		//remove from rows and cols
+		for(int i = 0; i < 9; i++) {
+			result.remove(board[row][i]);
+			result.remove(board[i][col]);
+		}
+
+		//remove from 3x3 area
+		int rowStart = row / 3 * 3;
+		int colStart = col / 3 * 3;
+		for(int r=rowStart; r<rowStart+3; r++) {
+			for(int c=colStart; c<colStart+3; c++) {
+				result.remove(board[r][c]);
+			}
+		}
+
+		return result;
 	}
 	
 /**
