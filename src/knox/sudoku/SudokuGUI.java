@@ -94,7 +94,13 @@ public class SudokuGUI extends JFrame {
 				int digit = key - '0';
 				System.out.println(key);
 				if (currentRow == row && currentCol == col) {
-					sudoku.set(row, col, digit);
+					if (!sudoku.isLegal(row, col, digit)) {
+						// error
+						JOptionPane.showMessageDialog(null,
+								String.format("%d cannot go in row %d and col %d", digit, row, col));
+					} else {
+						sudoku.set(row, col, digit);
+					}
 				}
 				update();
 			}
