@@ -63,7 +63,7 @@ public class SudokuGUI extends JFrame {
     private int width = DOUBLE_MARGIN_SIZE + squareSize * numCols;    		
     private int height = DOUBLE_MARGIN_SIZE + squareSize * numRows;  
     
-    private static Font FONT = new Font("Courier New", Font.BOLD, 40);
+    private static Font FONT = new Font("Verdana", Font.BOLD, 40);
     private static Color FONT_COLOR = Color.BLACK;
     private static Color BACKGROUND_COLOR = Color.GRAY;
     
