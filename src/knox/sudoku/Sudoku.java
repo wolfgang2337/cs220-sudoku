@@ -127,8 +127,24 @@ etc
 	}
 
 	public boolean gameOver() {
-		// TODO check that there are still open spots
-		return false;
+		for (int[] row : board) {
+			for (int val : row) {
+				if(val == 0) return false;
+			}
+		}
+		return true;
+	}
+
+	public boolean didIwin() {
+		if (!gameOver())
+			return false;
+		for(int r=0; r<9; r++) {
+			for (int c=0; c<9; c++) {
+				if (!isLegal(r, c, board[r][c]))
+					return false;
+			}
+		}
+		return true;
 	}
 
 	public boolean isBlank(int row, int col) {
