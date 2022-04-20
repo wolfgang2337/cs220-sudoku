@@ -30,9 +30,7 @@ public class Sudoku {
 	
 	public boolean isLegal(int row, int col, int val) {
 		Set<Integer> legalNums = (Set<Integer>) getLegalValues(row, col);
-		if(legalNums.contains(val))
-			return true;
-		return false;
+		return legalNums.contains(val);
 	}
 	
 	public Collection<Integer> getLegalValues(int row, int col) {
