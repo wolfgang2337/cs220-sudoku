@@ -4,22 +4,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
+import java.util.Collection;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 
 
 /**
@@ -52,6 +40,12 @@ public class SudokuGUI extends JFrame {
     private int currentRow = -1;
     private int currentCol = -1;
 
+	// hint row and col
+	private int hintRow = -1;
+	private int hintCol = -1;
+
+	//show legal values
+	private boolean showLegalVals = false;
     
     // figuring out how big to make each button
     // honestly not sure how much detail is needed here with margins
@@ -120,6 +114,10 @@ public class SudokuGUI extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			//System.out.printf("row %d, col %d, %s\n", row, col, e);
 			JButton button = (JButton)e.getSource();
+
+			//Turn off hint once you click on a square
+			hintRow = -1;
+			hintCol = -1;
 			
 			if (row == currentRow && col == currentCol) {
 				currentRow = -1;
@@ -128,7 +126,7 @@ public class SudokuGUI extends JFrame {
 				// we can try to enter a value in a 
 				currentRow = row;
 				currentCol = col;
-				
+
 				// TODO: figure out some way that users can enter values
 				// A simple way to do this is to take keyboard input
 				// or you can cycle through possible legal values with each click
@@ -162,28 +160,35 @@ public class SudokuGUI extends JFrame {
     private void update() {
     	for (int row=0; row<numRows; row++) {
     		for (int col=0; col<numCols; col++) {
-    			if (row == currentRow && col == currentCol && sudoku.isBlank(row, col)) {
-    				// draw this grid square special!
-    				// this is the grid square we are trying to enter value into
-    				buttons[row][col].setForeground(Color.RED);
-    				// I can't figure out how to change the background color of a grid square, ugh
-    				// Maybe I should have used JLabel instead of JButton?
-    				buttons[row][col].setBackground(Color.CYAN);
-    				setText(row, col, "_");
-    			} else {
-    				buttons[row][col].setForeground(FONT_COLOR);
-    				buttons[row][col].setBackground(BACKGROUND_COLOR);
-	    			int val = sudoku.get(row, col);
-	    			if (val == 0) {
-	    				setText(row, col, "");
-	    			} else {
-	    				setText(row, col, val+"");
-	    			}
-    			}
-    		}
-    	}
-    	repaint();
-    }
+				if (hintRow == row && hintCol == col) {
+					buttons[row][col].setBackground(Color.PINK);
+					setText(row, col, "");
+				} else if (row == currentRow && col == currentCol && sudoku.isBlank(row, col)) {
+					// draw this grid square special!
+					// this is the grid square we are trying to enter value into
+					buttons[row][col].setForeground(Color.RED);
+					// I can't figure out how to change the background color of a grid square, ugh
+					// Maybe I should have used JLabel instead of JButton?
+					buttons[row][col].setBackground(Color.CYAN);
+					setText(row, col, "_");
+					if(showLegalVals) {
+						Collection<Integer> legals = sudoku.getLegalValues(row, col);
+						JOptionPane.showMessageDialog(null, legals.toString());
+					}
+				} else {
+					buttons[row][col].setForeground(FONT_COLOR);
+					buttons[row][col].setBackground(BACKGROUND_COLOR);
+					int val = sudoku.get(row, col);
+					if (val == 0) {
+						setText(row, col, "");
+					} else {
+						setText(row, col, val + "");
+					}
+				}
+			}
+		}
+		repaint();
+	}
     
 	
     private void createMenuBar() {
@@ -241,12 +246,31 @@ public class SudokuGUI extends JFrame {
         //
         JMenu help = new JMenu("Help");
         menuBar.add(help);
-        
-        addToMenu(help, "Hint", new ActionListener() {
+
+		addToMenu(help, "Hint", new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(null, "Give the user a hint! Highlight the most constrained square\n" + 
-						"which is the square where the fewest posssible values can go");
+				for(int r=0; r<9; r++) {
+					for (int c=0; c<9; c++) {
+						if(sudoku.isBlank(r, c) && sudoku.getLegalValues(r, c).size() == 1) {
+							hintRow = r;
+							hintCol = c;
+							update();
+							return;
+						}
+					}
+				}
+				//TODO: Make a proper error message
+				JOptionPane.showMessageDialog(null, "Oops, you shouldn't see this!");
+			}
+		});
+
+		JMenuItem menuItem = new JCheckBoxMenuItem("Show Legals");
+		help.add(menuItem);
+		menuItem.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				showLegalVals = !showLegalVals;
 			}
 		});
         
