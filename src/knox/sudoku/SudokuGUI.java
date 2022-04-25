@@ -159,9 +159,6 @@ public class SudokuGUI extends JFrame {
      * to match any changes to the model
      */
     private void update() {
-		if(sudoku.didIwin()) {
-			JOptionPane.showMessageDialog(null, "You completed the sudoku!");
-		}
     	for (int row=0; row<numRows; row++) {
     		for (int col=0; col<numCols; col++) {
 				if (hintRow == row && hintCol == col) {
@@ -192,6 +189,16 @@ public class SudokuGUI extends JFrame {
 			}
 		}
 		repaint();
+		if(sudoku.didIwin()) {
+			int choice = JOptionPane.showOptionDialog(null, "You completed the sudoku! Want to play again?", "You Won!",
+					JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Yes", "No"}, "No");
+			if(choice == 1) {
+				System.exit(0);
+			} else {
+				sudoku.load("easy1.txt");
+				update();
+			}
+		}
 	}
     
 	
@@ -248,6 +255,22 @@ public class SudokuGUI extends JFrame {
 				update();
             }
         });
+
+		addToMenu(file, "Change Font", new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser jfc = new JFileChooser(new File("."));
+
+				int returnValue = jfc.showOpenDialog(null);
+
+				if(returnValue == JFileChooser.APPROVE_OPTION) {
+					File selectedFile = jfc.getSelectedFile();
+					sudoku.load(selectedFile);
+					JOptionPane.showMessageDialog(null, "Loaded game from file " + selectedFile.getAbsolutePath());
+				}
+				update();
+			}
+		});
         
         //
         // Help menu

@@ -156,7 +156,7 @@ etc
 			return false;
 		for(int r=0; r<9; r++) {
 			for (int c=0; c<9; c++) {
-				if (!isLegal(r, c, board[r][c]))
+				if (isLegal(r, c, board[r][c])) //!isLegal(r, c, board[r][c]) does not work for this as once the board is full, every square has no legal values
 					return false;
 			}
 		}
