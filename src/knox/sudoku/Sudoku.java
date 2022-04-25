@@ -1,4 +1,5 @@
 package knox.sudoku;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
@@ -65,10 +66,9 @@ etc
 0 0 0 3 0 4 0 8 9
 
  */
-	public void load(String filename) {
+	public void load(File file) {
 		try {
-			Scanner scan = new Scanner(new FileInputStream(filename));
-			// read the file
+			Scanner scan = new Scanner(file);
 			for (int r=0; r<9; r++) {
 				for (int c=0; c<9; c++) {
 					int val = scan.nextInt();
@@ -78,6 +78,10 @@ etc
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public void load(String filename) {
+		load(new File(filename));
 	}
 	
 	/**
@@ -103,6 +107,18 @@ etc
 				} else {
 					result += val + " ";
 				}
+			}
+			result += "\n";
+		}
+		return result;
+	}
+
+	public String toFileString() {
+		String result = "";
+		for (int r=0; r<9; r++) {
+			for (int c=0; c<9; c++) {
+				int val = get(r, c);
+				result += val + " ";
 			}
 			result += "\n";
 		}

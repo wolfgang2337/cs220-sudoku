@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.*;
+import java.io.File;
 import java.util.Collection;
 
 import javax.swing.*;
@@ -158,6 +159,9 @@ public class SudokuGUI extends JFrame {
      * to match any changes to the model
      */
     private void update() {
+		if(sudoku.didIwin()) {
+			JOptionPane.showMessageDialog(null, "You completed the sudoku!");
+		}
     	for (int row=0; row<numRows; row++) {
     		for (int col=0; col<numCols; col++) {
 				if (hintRow == row && hintCol == col) {
@@ -214,14 +218,17 @@ public class SudokuGUI extends JFrame {
         addToMenu(file, "Save", new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	// TODO: save the current game to a file!
-            	// HINT: Check the Util.java class for helpful methods
-            	// HINT: check out JFileChooser
-            	// https://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html
-            	JOptionPane.showMessageDialog(null,
-            		    "TODO: save the current game to a file!\n"
-            		    + "HINT: Check the Util.java class for helpful methods"
-            		    + "HINT: Check out JFileChooser");
+				String board = sudoku.toFileString();
+
+				JFileChooser jfc = new JFileChooser(new File("."));
+
+				int returnValue = jfc.showSaveDialog(null);
+
+				if(returnValue == JFileChooser.APPROVE_OPTION) {
+					File selectedFile = jfc.getSelectedFile();
+					Util.writeToFile(selectedFile, board);
+					JOptionPane.showMessageDialog(null, "Saved game to file " + selectedFile.getAbsolutePath());
+				}
                 update();
             }
         });
@@ -229,15 +236,16 @@ public class SudokuGUI extends JFrame {
         addToMenu(file, "Load", new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	// TODO: load a saved game from a file
-            	// HINT: Check the Util.java class for helpful methods
-            	// HINT: check out JFileChooser
-            	// https://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html
-            	JOptionPane.showMessageDialog(null,
-            		    "TODO: load a saved game from a file\n"
-            		    + "HINT: Check the Util.java class for helpful methods\n"
-            		    + "HINT: Check out JFileChooser");
-                update();
+				JFileChooser jfc = new JFileChooser(new File("."));
+
+				int returnValue = jfc.showOpenDialog(null);
+
+				if(returnValue == JFileChooser.APPROVE_OPTION) {
+					File selectedFile = jfc.getSelectedFile();
+					sudoku.load(selectedFile);
+					JOptionPane.showMessageDialog(null, "Loaded game from file " + selectedFile.getAbsolutePath());
+				}
+				update();
             }
         });
         
