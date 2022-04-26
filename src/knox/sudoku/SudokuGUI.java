@@ -1,11 +1,8 @@
 package knox.sudoku;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collection;
 
 import javax.swing.*;
@@ -259,16 +256,35 @@ public class SudokuGUI extends JFrame {
 		addToMenu(file, "Change Font", new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JFileChooser jfc = new JFileChooser(new File("."));
-
-				int returnValue = jfc.showOpenDialog(null);
-
-				if(returnValue == JFileChooser.APPROVE_OPTION) {
-					File selectedFile = jfc.getSelectedFile();
-					sudoku.load(selectedFile);
-					JOptionPane.showMessageDialog(null, "Loaded game from file " + selectedFile.getAbsolutePath());
+				String[] fontList = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+				String fontName = JOptionPane.showInputDialog(null, "Please enter the font name.");
+				if(Arrays.asList(fontList).contains(fontName)) {
+					Font newFont = new Font(fontName, Font.BOLD, 40);
+					for (int r=0; r<numRows; r++) {
+						for (int c = 0; c < numCols; c++) {
+							buttons[r][c].setFont(newFont);
+						}
+					}
+					update();
+					JOptionPane.showMessageDialog(null, String.format("Font has been changed to %s.", fontName));
+					return;
+				} else {
+					JOptionPane.showMessageDialog(null, "Font not found (Make sure capitalization is correct)");
 				}
 				update();
+			}
+		});
+
+		addToMenu(file, "Reset Font", new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				for (int r=0; r<numRows; r++) {
+					for (int c = 0; c < numCols; c++) {
+						buttons[r][c].setFont(FONT);
+					}
+				}
+				update();
+				JOptionPane.showMessageDialog(null, "Font reset to Verdana.");
 			}
 		});
         
