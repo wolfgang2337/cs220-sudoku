@@ -257,34 +257,17 @@ public class SudokuGUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String[] fontList = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-				String fontName = JOptionPane.showInputDialog(null, "Please enter the font name.");
-				if(Arrays.asList(fontList).contains(fontName)) {
-					Font newFont = new Font(fontName, Font.BOLD, 40);
-					for (int r=0; r<numRows; r++) {
-						for (int c = 0; c < numCols; c++) {
-							buttons[r][c].setFont(newFont);
-						}
-					}
-					update();
-					JOptionPane.showMessageDialog(null, String.format("Font has been changed to %s.", fontName));
-					return;
-				} else {
-					JOptionPane.showMessageDialog(null, "Font not found (Make sure capitalization is correct)");
-				}
-				update();
-			}
-		});
-
-		addToMenu(file, "Reset Font", new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
+				String fontName = (String) JOptionPane.showInputDialog(null, "Please choose the font.",
+						"Select Font", JOptionPane.PLAIN_MESSAGE, null, fontList, "Verdana");
+				Font newFont = new Font(fontName, Font.BOLD, 40);
 				for (int r=0; r<numRows; r++) {
 					for (int c = 0; c < numCols; c++) {
-						buttons[r][c].setFont(FONT);
+						buttons[r][c].setFont(newFont);
 					}
 				}
 				update();
-				JOptionPane.showMessageDialog(null, "Font reset to Verdana.");
+				JOptionPane.showMessageDialog(null, String.format("Font has been changed to %s.", fontName));
+				return;
 			}
 		});
         
