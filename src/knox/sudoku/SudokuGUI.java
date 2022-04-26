@@ -257,7 +257,7 @@ public class SudokuGUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String[] fontList = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-				String fontName = (String) JOptionPane.showInputDialog(null, "Please choose the font.",
+				String fontName = (String) JOptionPane.showInputDialog(null, "Please choose the font.\n(Warning: Not all fonts may work)",
 						"Select Font", JOptionPane.PLAIN_MESSAGE, null, fontList, "Verdana");
 				Font newFont = new Font(fontName, Font.BOLD, 40);
 				for (int r=0; r<numRows; r++) {
